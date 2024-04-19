@@ -1,5 +1,12 @@
 message("main ${MAIN_INCLUDE}")
-add_executable(main main.cpp shader.h)
+
+
+
+aux_source_directory(. _SOURCES)
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../depends/glm)
+
+add_executable(main ${_SOURCES})
 
 target_include_directories(
   main PUBLIC ${MAIN_INCLUDE}
