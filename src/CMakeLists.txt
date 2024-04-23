@@ -1,7 +1,5 @@
 message("main ${MAIN_INCLUDE}")
 
-
-
 aux_source_directory(. _SOURCES)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../depends/glm)
