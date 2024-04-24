@@ -24,6 +24,7 @@ Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
+glm::vec3 lightPos(1.2f, 0.0f, 2.0f);
 
 // timing
 float deltaTime = 0.0f;	// time between current frame and last frame
@@ -139,7 +140,6 @@ int main()
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
-    glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
     while (!glfwWindowShouldClose(window))
     {
         // per-frame time logic
@@ -160,6 +160,9 @@ int main()
         // bind textures on corresponding texture units
         // activate shader
         ourShader.use();
+        float time = glfwGetTime()*10;
+        lightPos.x = glm::sin(glm::radians(time));
+        lightPos.z = glm::cos(glm::radians(time));
         ourShader.setVec3("objectColor", glm::vec3(1.0f, 0.5f, 0.31f));
         ourShader.setVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
         // pass projection matrix to shader (note that in this case it could change every frame)
@@ -168,16 +171,16 @@ int main()
         glm::mat4 view = camera.GetViewMatrix();
         ourShader.setMat4("view", view);
         glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-        model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -1.0f, 0.0f));
         ourShader.setMat4("model", model);
         ourShader.setVec3("lightPos", lightPos);
+        ourShader.setVec3("viewPos", camera.Position);
 
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
         lightShader.use();
         model = glm::translate(glm::mat4(1.0f), lightPos);
-        model = glm::scale(model, glm::vec3(0.5f));
+        model = glm::scale(model, glm::vec3(0.2f));
         lightShader.setMat4("model", model);
         lightShader.setMat4("projection", projection);
         lightShader.setMat4("view", view);
